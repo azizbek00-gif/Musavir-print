@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Musavvir Print - Buyurtma</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Canvas Confetti for the celebration effect -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playball&family=VT323&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'musavvir-pink': '#D8004B',
+                        'musavvir-bg': '#FF1F71',
+                        'device-cream': '#F0EFEB',
+                        'nokia-green': '#A3C693',
+                        'nokia-dark': '#1c2819',
+                        'ui-dark': '#2A2A2A'
+                    },
+                    fontFamily: {
+                        'logo': ['Playball', 'cursive'],
+                        'screen': ['VT323', 'monospace'],
+                        'body': ['Space Grotesk', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'neo-out': '6px 6px 0px 0px rgba(42, 42, 42, 1)',
+                        'neo-in': 'inset 4px 4px 0px 0px rgba(0, 0, 0, 0.1)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #D8004B;
+            background-image: 
+                radial-gradient(circle at top right, #FF1F71 0%, transparent 60%),
+                radial-gradient(circle at bottom left, #9A0035 0%, transparent 60%);
+            background-attachment: fixed;
+        }
+
+        /* 3D Device Body */
+        .device-body {
+            box-shadow: 
+                -15px 15px 30px rgba(0,0,0,0.3),
+                inset 3px 3px 10px rgba(255,255,255,0.9),
+                inset -5px -5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Retro LCD Screen */
+        .lcd-screen {
+            box-shadow: 
+                inset 5px 5px 15px rgba(0,0,0,0.2),
+                inset -2px -2px 5px rgba(255,255,255,0.5),
+                0 0 0 4px #8B9982,
+                0 0 0 8px #E2DFD8;
+            position: relative;
+        }
+
+        /* Screen Scanlines for vintage effect */
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.06) 50%,
+                rgba(0,0,0,0.06)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+
+        /* Inputs */
+        .retro-input {
+            background-color: #FAFAFA;
+            border: 2px solid #D1CDC4;
+            box-shadow: inset 3px 3px 6px rgba(0,0,0,0.08);
+            transition: all 0.2s;
+        }
+        
+        .retro-input:focus {
+            outline: none;
+            border-color: #D8004B;
+            box-shadow: inset 3px 3px 6px rgba(0,0,0,0.1), 0 0 0 4px rgba(216, 0, 75, 0.15);
+        }
+
+        /* 3D Action Button */
+        .action-btn {
+            background-color: #2A2A2A;
+            color: #F0EFEB;
+            border: 2px solid #111;
+            box-shadow: 0 8px 0 #111, 0 15px 20px rgba(0,0,0,0.4);
+            transform: translateY(0);
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        .action-btn:active {
+            transform: translateY(8px);
+            box-shadow: 0 0px 0 #111, 0 5px 10px rgba(0,0,0,0.4);
+        }
+
+        .action-btn:hover {
+            background-color: #3f3f3f;
+        }
+
+        /* Blinking Cursor inside LCD */
+        .cursor {
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Text shadow for LCD text to look like liquid crystals */
+        .lcd-text {
+            text-shadow: 1px 1px 0px rgba(163, 198, 147, 0.4);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 sm:p-6 font-body antialiased selection:bg-musavvir-pink selection:text-white">
+
+    <div class="device-body bg-device-cream w-full max-w-sm rounded-[2.5rem] p-6 sm:p-8 relative">
+        
+        <!-- Top decorative speaker pill -->
+        <div class="w-16 h-2 bg-gray-300 rounded-full mx-auto mb-6 shadow-inner"></div>
+
+        <!-- Logo -->
+        <div class="text-center mb-8">
+            <h1 class="font-logo text-5xl sm:text-6xl text-musavvir-pink lowercase mb-0 drop-shadow-sm">musavvir</h1>
+            <div class="flex items-center justify-center gap-3 mt-1">
+                <div class="w-8 h-[2px] bg-ui-dark opacity-30"></div>
+                <span class="text-xs uppercase tracking-[0.4em] text-ui-dark font-bold">print</span>
+                <div class="w-8 h-[2px] bg-ui-dark opacity-30"></div>
+            </div>
+        </div>
+
+        <!-- LCD Screen -->
+        <div class="lcd-screen bg-nokia-green rounded-lg p-4 mb-8 h-48 sm:h-52 flex flex-col overflow-hidden">
+            <div class="scanlines absolute inset-0 z-10"></div>
+            
+            <div class="relative z-20 flex flex-col h-full font-screen text-nokia-dark lcd-text">
+                
+                <!-- Header Status -->
+                <div class="flex justify-between items-center text-base sm:text-lg opacity-70 border-b-2 border-nokia-dark border-opacity-20 pb-1 mb-2">
+                    <span class="uppercase tracking-wider">FRMT:<span id="disp-format" class="ml-1 font-bold">10x15</span></span>
+                    <span class="uppercase tracking-wider">SONI:<span id="disp-qty" class="ml-1 font-bold">0</span></span>
+                </div>
+
+                <!-- Price Area -->
+                <div class="flex-grow flex flex-col justify-center items-end mt-2">
+                    <div class="text-xl sm:text-2xl opacity-60 uppercase mb-[-5px]">Jami:</div>
+                    <div class="text-[3.5rem] sm:text-[4rem] leading-none flex items-baseline">
+                        <span id="disp-price">0</span>
+                        <span class="text-3xl ml-1 cursor">_</span>
+                    </div>
+                    <div class="text-xl opacity-80 uppercase mt-1">so'm</div>
+                </div>
+
+                <!-- Free Delivery Badge -->
+                <div id="delivery-msg" class="mt-auto flex items-center justify-center gap-2 bg-nokia-dark text-nokia-green rounded py-1 px-2 transform transition-all duration-300 translate-y-8 opacity-0">
+                    <svg class="w-4 h-4 fill-current animate-pulse" viewBox="0 0 24 24"><path d="M19 7h-3V6a4 4 0 0 0-8 0v1H5a1 1 0 0 0-1 1v11a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8a1 1 0 0 0-1-1zm-9-1a2 2 0 1 1 4 0v1h-4V6zm8 13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V9h12v10z"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/></svg>
+                    <span class="text-[15px] sm:text-base leading-none pt-[2px]">Yetkazib berish bepul!</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="space-y-5">
+            
+            <!-- Format Dropdown -->
+            <div>
+                <label class="block text-[13px] font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Formatni tanlang</label>
+                <div class="relative">
+                    <select id="format" class="retro-input w-full appearance-none rounded-xl py-3.5 px-4 text-ui-dark font-bold text-lg cursor-pointer">
+                        <option value="10x15">10x15 standart</option>
+                        <option value="polaroid">Polaroid</option>
+                        <option value="a5">A5 format</option>
+                        <option value="a4">A4 format</option>
+                        <option value="a3">A3 format</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-400">
+                        <svg class="fill-current h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quantity Input -->
+            <div>
+                <label class="block text-[13px] font-bold text-gray-500 uppercase tracking-wider mb-2 ml-1">Rasmlar soni</label>
+                <input type="number" id="qty" min="0" max="10000" placeholder="0" 
+                    class="retro-input w-full rounded-xl py-3.5 px-4 text-2xl font-bold text-center text-musavvir-pink placeholder-gray-300" />
+            </div>
+
+            <!-- Order Button -->
+            <button id="order-btn" class="action-btn w-full rounded-xl py-4 px-6 text-lg font-bold uppercase tracking-[0.2em] mt-6 flex items-center justify-center gap-2">
+                <span>Buyurtma berish</span>
+                <svg class="w-5 h-5 mb-[2px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const formatSelect = document.getElementById('format');
+        const qtyInput = document.getElementById('qty');
+        const dispFormat = document.getElementById('disp-format');
+        const dispQty = document.getElementById('disp-qty');
+        const dispPrice = document.getElementById('disp-price');
+        const deliveryMsg = document.getElementById('delivery-msg');
+        const orderBtn = document.getElementById('order-btn');
+
+        // Formatter for numbers with spaces (e.g., 90 000)
+        const numberFormatter = new Intl.NumberFormat('ru-RU');
+
+        // Confetti state to ensure it only fires once when crossing 300
+        let hasFiredConfetti = false;
+
+        // Core Calculation Function
+        function updateCalculator() {
+            // Parse inputs
+            let qty = parseInt(qtyInput.value) || 0;
+            const formatText = formatSelect.options[formatSelect.selectedIndex].text.split(' ')[0]; // Gets just "10x15" or "Polaroid"
+
+            // Prevent negative numbers
+            if (qty < 0) {
+                qty = 0;
+                qtyInput.value = 0;
+            }
+
+            // Pricing Logic based on requirements
+            let pricePerItem = 0;
+            if (qty > 0 && qty <= 50) {
+                pricePerItem = 2000;
+            } else if (qty >= 51 && qty <= 200) {
+                pricePerItem = 1800;
+            } else if (qty >= 201 && qty <= 300) {
+                pricePerItem = 1700;
+            } else if (qty >= 301 && qty <= 500) {
+                pricePerItem = 1600;
+            } else if (qty >= 501) {
+                pricePerItem = 1500;
+            }
+
+            const totalPrice = qty * pricePerItem;
+
+            // Update UI
+            dispFormat.textContent = formatText.toUpperCase();
+            dispQty.textContent = numberFormatter.format(qty);
+            dispPrice.textContent = numberFormatter.format(totalPrice);
+
+            // Trigger Confetti and Delivery Message
+            if (qty >= 300) {
+                // Show message
+                deliveryMsg.classList.remove('translate-y-8', 'opacity-0');
+                deliveryMsg.classList.add('translate-y-0', 'opacity-100');
+
+                // Fire confetti if it hasn't fired yet for this threshold crossing
+                if (!hasFiredConfetti) {
+                    fireConfetti();
+                    hasFiredConfetti = true;
+                }
+            } else {
+                // Hide message
+                deliveryMsg.classList.add('translate-y-8', 'opacity-0');
+                deliveryMsg.classList.remove('translate-y-0', 'opacity-100');
+                
+                // Reset confetti state so it can fire again if they go back up
+                hasFiredConfetti = false;
+            }
+        }
+
+        // Fun Confetti Effect Function
+        function fireConfetti() {
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { 
+                    particleCount,
+                    origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+                    colors: ['#D8004B', '#9CBA8F', '#F0EFEB']
+                }));
+                confetti(Object.assign({}, defaults, { 
+                    particleCount,
+                    origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+                    colors: ['#D8004B', '#9CBA8F', '#F0EFEB']
+                }));
+            }, 250);
+        }
+
+        // Telegram Redirect Action
+        orderBtn.addEventListener('click', () => {
+            // Small delay to allow the button press animation to show
+            setTimeout(() => {
+                window.open('https://t.me/AzizaxonOmonova', '_blank');
+            }, 150);
+        });
+
+        // Event Listeners for auto-calculation
+        formatSelect.addEventListener('change', updateCalculator);
+        qtyInput.addEventListener('input', updateCalculator);
+
+        // Initialize state on first load
+        updateCalculator();
+    </script>
+</body>
+</html>
